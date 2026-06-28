@@ -105,6 +105,7 @@
       </cdx-accordion>
     </div>
   </div>
+  <flagged-entries :round-id="round.id" :round-status="round.status" />
   <div
     class="round__actions"
     style="display: flex; justify-content: end; gap: 16px; margin-top: 16px"
@@ -140,6 +141,7 @@ import alertService from '@/services/alertService'
 // Components
 import { CdxButton, CdxAccordion } from '@wikimedia/codex'
 import UserAvatarWithName from '../UserAvatarWithName.vue'
+import FlaggedEntries from './FlaggedEntries.vue'
 
 // Icons
 import Play from 'vue-material-design-icons/Play.vue'
@@ -192,7 +194,23 @@ const pauseRound = () => {
     .catch(alertService.error)
 }
 
-const finalizeRound = () => {
+// Soft nudge: before closing a round, make sure flagged images were reviewed.
+// Returns true to proceed, false to abort. Never hard-blocks on fetch errors.
+const acknowledgeFlags = () => {
+  return adminService
+    .getRoundFlags(props.round.id)
+    .then((response) => {
+      const count = response.data?.length || 0
+      if (!count) return true
+      return confirm($t('montage-round-flag-ack', [count]))
+    })
+    .catch(() => true)
+}
+
+const finalizeRound = async () => {
+  const acknowledged = await acknowledgeFlags()
+  if (!acknowledged) return
+
   const completionPercentage = Math.round(roundDetails.value?.is_closable || 0)
 
   const confirmText =

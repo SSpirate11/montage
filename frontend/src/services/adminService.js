@@ -41,6 +41,9 @@ const adminService = {
 
   getRoundFlags: (id) => apiBackend.get(`admin/round/${id}/flags`),
 
+  disqualifyImage: (roundId, entryId, reason) =>
+    apiBackend.post(`admin/round/${roundId}/${entryId}/disqualify`, { reason }),
+
   getRoundReviews: (id) => apiBackend.get(`admin/round/${id}/reviews`),
 
   getRoundVotes: (id) => apiBackend.get(`admin/round/${id}/votes`),

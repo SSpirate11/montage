@@ -55,6 +55,13 @@
           <div class="vote-gallery-fav-icon" @click.stop="toggleFav(image)">
             <heart :class="{ 'is-fave': image.is_fave }" />
           </div>
+          <div
+            class="vote-gallery-flag-icon"
+            @click.stop="openFlag(image)"
+            v-tooltip="$t('montage-flag-action')"
+          >
+            <flag-outline :class="{ 'is-flagged': image.is_flagged }" />
+          </div>
           <div class="vote-gallery-image-container">
             <CommonsImage :image="image" :width="640" />
           </div>
@@ -94,6 +101,13 @@
     <h3>{{ $t('montage-vote-round-inactive') }}</h3>
     <p class="greyed">{{ $t('montage-vote-contact-organizer') }}</p>
   </div>
+  <flag-dialog
+    v-if="flagTarget"
+    v-model:open="flagOpen"
+    :round-id="round.id"
+    :entry-id="flagTarget.entry.id"
+    @flagged="flagTarget.is_flagged = true"
+  />
 </template>
 
 <script setup>
@@ -104,11 +118,13 @@ import jurorService from '@/services/jurorService'
 import alertService from '@/services/alertService'
 import dialogService from '@/services/dialogService'
 import CommonsImage from '@/components/CommonsImage.vue'
+import FlagDialog from '@/components/Vote/FlagDialog.vue'
 
 // Components
 import { VueDraggableNext as draggable } from 'vue-draggable-next'
 import { CdxButton } from '@wikimedia/codex'
 import Heart from 'vue-material-design-icons/Heart.vue'
+import FlagOutline from 'vue-material-design-icons/FlagOutline.vue'
 
 // Icon
 import ContentSaveOutline from 'vue-material-design-icons/ContentSaveOutline.vue'
@@ -132,6 +148,13 @@ const roundLink = [props.round.id, props.round.canonical_url_name].join('-')
 const images = ref(null)
 const stats = ref(null)
 const gridSize = ref(1)
+const flagOpen = ref(false)
+const flagTarget = ref(null)
+
+const openFlag = (image) => {
+  flagTarget.value = image
+  flagOpen.value = true
+}
 
 const setGridSize = (size) => {
   gridSize.value = size
@@ -259,6 +282,29 @@ watch(
 
 .vote-gallery-fav-icon .is-fave {
   color: #e53935;
+}
+
+.vote-gallery-flag-icon {
+  position: absolute;
+  top: 6px;
+  right: 44px;
+  background: rgba(0, 0, 0, 0.18);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.vote-gallery-flag-icon:hover {
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.vote-gallery-flag-icon .is-flagged {
+  color: #f9a825;
 }
 
 .vote-gallery {

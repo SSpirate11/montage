@@ -668,7 +668,7 @@ class Flag(Base):
     round_entry_id = Column(Integer, ForeignKey('round_entries.id'), index=True)
     user_id = Column(Integer, ForeignKey('users.id'), index=True)
 
-    reason = Column(Text)
+    reason = Column(Text)  # optional free-text note clarifying the flag
 
     round_entry = relationship('RoundEntry', back_populates='flaggings')
 
@@ -682,6 +682,7 @@ class Flag(Base):
                'entry_id': self.round_entry.entry.id,
                'entry_name': self.round_entry.entry.name,
                'user': self.user.username,
+               'category': (self.flags or {}).get('category'),
                'reason': self.reason,
                'date': format_date(self.create_date)}
         return ret
@@ -2933,11 +2934,12 @@ class JurorDAO(object):
         fave.status = CANCELLED_STATUS
         fave.modified_date = datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None)
 
-    def flag(self, round_id, entry_id, reason=None):
+    def flag(self, round_id, entry_id, reason=None, category=None):
         round_entry = self.get_round_entry(round_id, entry_id)
         flag = Flag(round_entry_id = round_entry.id,
                     user=self.user,
-                    reason=reason)
+                    reason=reason,
+                    flags={'category': category} if category else {})
         self.rdb_session.add(flag)
 
 

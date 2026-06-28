@@ -84,6 +84,9 @@
               )
             }}
           </cdx-button>
+          <cdx-button weight="quiet" @click="flagOpen = true">
+            <flag-outline class="icon-small" /> {{ $t('montage-flag-action') }}
+          </cdx-button>
         </div>
         <div>
           <cdx-button weight="quiet" @click="setRate()">
@@ -167,6 +170,13 @@
     <h3>{{ $t('montage-vote-round-inactive') }}</h3>
     <p class="greyed">{{ $t('montage-vote-contact-organizer') }}</p>
   </div>
+  <flag-dialog
+    v-if="rating.current"
+    v-model:open="flagOpen"
+    :round-id="round.id"
+    :entry-id="rating.current.entry.id"
+    @flagged="rating.current.is_flagged = true"
+  />
 </template>
 
 <script setup>
@@ -178,6 +188,7 @@ import alertService from '@/services/alertService'
 import { getCommonsImageUrl } from '@/utils'
 
 import CommonsImage from '@/components/CommonsImage.vue'
+import FlagDialog from '@/components/Vote/FlagDialog.vue'
 import { CdxButton, CdxProgressBar } from '@wikimedia/codex'
 
 import ThumbUp from 'vue-material-design-icons/ThumbUp.vue'
@@ -192,6 +203,7 @@ import History from 'vue-material-design-icons/History.vue'
 import ArrowRightThick from 'vue-material-design-icons/ArrowRightThick.vue'
 import ArrowLeftThick from 'vue-material-design-icons/ArrowLeftThick.vue'
 import Heart from 'vue-material-design-icons/Heart.vue'
+import FlagOutline from 'vue-material-design-icons/FlagOutline.vue'
 
 // Hooks
 const { t: $t } = useI18n()
@@ -203,6 +215,7 @@ const skips = ref(0)
 const imageLoading = ref(true)
 const voteContainer = ref(null)
 const showSidebar = ref(true)
+const flagOpen = ref(false)
 const imageCache = new Map()
 
 const props = defineProps({

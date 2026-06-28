@@ -368,7 +368,8 @@ def remove_fave(user_dao, round_id, entry_id):
 def submit_flag(user_dao, round_id, entry_id, request_dict):
     juror_dao = JurorDAO(user_dao)
     reason = request_dict.get('reason')
-    juror_dao.flag(round_id, entry_id, reason)
+    category = request_dict.get('category')
+    juror_dao.flag(round_id, entry_id, reason, category)
 
 
 

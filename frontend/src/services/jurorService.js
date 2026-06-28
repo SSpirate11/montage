@@ -25,8 +25,8 @@ const jurorService = {
   unfaveImage: (roundId, entryId) =>
     apiBackend.post(`juror/round/${roundId}/${entryId}/unfave`, {}),
 
-  flagImage: (roundId, entryId, reason) =>
-    apiBackend.post(`juror/round/${roundId}/${entryId}/flag`, { reason }),
+  flagImage: (roundId, entryId, category, reason) =>
+    apiBackend.post(`juror/round/${roundId}/${entryId}/flag`, { category, reason }),
 
   setRating: (id, data) => apiBackend.post(`juror/round/${id}/tasks/submit`, data),
 

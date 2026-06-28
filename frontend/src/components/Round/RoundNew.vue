@@ -163,12 +163,13 @@
                 </cdx-checkbox>
               </cdx-field>
               <cdx-field v-if="formData.config.dq_by_resolution">
-                <cdx-text-input 
-                  v-model="formData.config.min_resolution" 
+                <cdx-text-input
+                  v-model="formData.config.min_resolution"
                   input-type="number"
                   :min="100000"
                   :step="100000"
-                  placeholder="2000000" />
+                  placeholder="2000000"
+                />
                 <template #label>{{ $t('montage-round-min-resolution') }}</template>
                 <template #help-text>
                   <p>{{ $t('montage-round-min-resolution-help') }}</p>
@@ -318,7 +319,20 @@ const cancelRound = () => {
   emit('update:showAddRoundForm', false)
 }
 
-const submitRound = () => {
+// Soft nudge: before advancing past a round, make sure flagged images were
+// reviewed. Returns true to proceed, false to abort. Never blocks on errors.
+const acknowledgeFlags = (roundId) => {
+  return adminService
+    .getRoundFlags(roundId)
+    .then((response) => {
+      const count = response.data?.length || 0
+      if (!count) return true
+      return confirm($t('montage-round-flag-ack', [count]))
+    })
+    .catch(() => true)
+}
+
+const submitRound = async () => {
   if (!formData.value.deadline_date) {
     alertService.error({
       message: $t('montage-required-voting-deadline')
@@ -369,6 +383,9 @@ const submitRound = () => {
       alertService.error($t('montage-something-went-wrong'))
       return
     }
+
+    const acknowledged = await acknowledgeFlags(prevRound.id)
+    if (!acknowledged) return
 
     const payload = {
       next_round: {
