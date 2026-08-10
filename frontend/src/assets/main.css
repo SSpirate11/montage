@@ -2,10 +2,10 @@
   --bg-page: #fafafa;
   --bg-surface: #ffffff;
   --bg-surface-alt: #e8e8e8;
-  --bg-image-panel: #e6e6e6;
-  --bg-gallery-image: #cccccc;
+  --bg-image-panel: #ffffff;
+  --bg-gallery-image: #ffffff;
   --bg-gallery-hover: #e0e0e0;
-  --bg-image-dialog: #f5f5f5;
+  --bg-image-dialog: #ffffff;
   --text-primary: rgba(0, 0, 0, 0.87);
   --text-secondary: rgba(0, 0, 0, 0.54);
   --text-muted: #666666;
@@ -28,10 +28,10 @@
   --bg-page: #1c1c1c;
   --bg-surface: #272727;
   --bg-surface-alt: #323232;
-  --bg-image-panel: #222222;
-  --bg-gallery-image: #272727;
+  --bg-image-panel: #ffffff;
+  --bg-gallery-image: #ffffff;
   --bg-gallery-hover: #3c3c3c;
-  --bg-image-dialog: #272727;
+  --bg-image-dialog: #ffffff;
   --text-primary: #e4e4e4;
   --text-secondary: #b0b0b0;
   --text-muted: #999999;
@@ -690,4 +690,11 @@ input:checked + .slider::before {
 [data-theme='dark'] .cdx-button--action-destructive.cdx-button--weight-quiet:enabled:hover {
   background-color: rgba(255, 77, 77, 0.15) !important;
   color: #ff8a8a !important;
+}
+
+[data-theme='dark'] .vote-image-container .sidebar-hide-btn,
+[data-theme='dark'] .vote-image-container .sidebar-hide-btn .cdx-icon svg,
+.vote-image-container .sidebar-hide-btn {
+  color: #202122 !important;
+  fill: #202122 !important;
 }
